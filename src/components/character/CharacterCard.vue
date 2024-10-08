@@ -24,7 +24,8 @@
 			</div>
 			<div class="character__info">
 				<span>Last known location:</span>
-				<!-- <RouterLink
+				<RouterLink
+					:to="{ name: 'LocationsPage' }"
 					v-if="character.location.url"
 					class="character__link"
 				>
@@ -35,7 +36,7 @@
 					class="character__location"
 				>
 					{{ character.location.name }}
-				</span> -->
+				</span>
 			</div>
 		</div>
 	</div>

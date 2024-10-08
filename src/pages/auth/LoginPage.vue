@@ -1,5 +1,8 @@
 <template>
-	<Form class="form">
+	<Form
+		class="form"
+		@submit="logIn"
+	>
 		<div class="form__field">
 			<label
 				for="email"
@@ -14,7 +17,6 @@
 				type="email"
 				name="email"
 				placeholder="Email"
-				value="test@gmail.com"
 			/>
 			<ErrorMessage
 				name="email"
@@ -35,7 +37,6 @@
 				type="password"
 				name="password"
 				placeholder="Password"
-				value="123123123"
 			/>
 			<ErrorMessage
 				name="password"
@@ -49,14 +50,12 @@
 			>
 				Create account
 			</RouterLink>
-			<RouterLink :to="{ name: 'HomePage' }">
-				<button
-					type="submit"
-					class="form__button"
-				>
-					Log in
-				</button>
-			</RouterLink>
+			<button
+				type="submit"
+				class="form__button"
+			>
+				Log in
+			</button>
 		</div>
 	</Form>
 </template>
@@ -64,6 +63,8 @@
 <script>
 import { Form, Field, ErrorMessage } from 'vee-validate';
 
+import { useAuthStore } from '@/store/authStore';
+import { mapState, mapActions } from 'pinia';
 export default {
 	name: 'LoginPage',
 	components: {
@@ -71,7 +72,14 @@ export default {
 		Field,
 		ErrorMessage
 	},
+	computed: {
+		...mapState(useAuthStore, ['user']),
+		isData() {
+			return Boolean(localStorage.getItem('user'));
+		}
+	},
 	methods: {
+		...mapActions(useAuthStore, ['logIn']),
 		validateEmail(email) {
 			if (!email) return 'This field is required.';
 			const validEmailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;

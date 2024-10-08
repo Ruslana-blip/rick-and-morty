@@ -5,9 +5,6 @@ const routes = [
 	{
 		path: '/',
 		component: () => import('@/layouts/MainLayout.vue'),
-		meta: {
-			requiresAuth: true
-		},
 		children: [
 			{
 				path: '',
@@ -16,6 +13,9 @@ const routes = [
 			},
 			{
 				path: 'characters',
+				meta: {
+					requiresAuth: true
+				},
 				children: [
 					{
 						path: '',
@@ -31,6 +31,9 @@ const routes = [
 			},
 			{
 				path: 'locations',
+				meta: {
+					requiresAuth: true
+				},
 				children: [
 					{
 						path: '',
@@ -46,6 +49,9 @@ const routes = [
 			},
 			{
 				path: 'episodes',
+				meta: {
+					requiresAuth: true
+				},
 				children: [
 					{
 						path: '',
@@ -65,6 +71,9 @@ const routes = [
 		path: '/auth',
 		component: () => import('@/layouts/AuthLayout.vue'),
 		redirect: { name: 'LoginPage' },
+		meta: {
+			hideForAuth: true
+		},
 		children: [
 			{
 				path: 'login',
@@ -85,13 +94,13 @@ const router = createRouter({
 	routes
 });
 
-router.beforeEach(to => {
-	// const authStore = useAuthStore();
-	// if (!authStore.isLoggedIn && to.meta.requiresAuth) {
-	// 	return { name: 'LoginPage' };
-	// } else if (authStore.isLoggedIn && !to.meta.requiresAuth) {
-	// 	return { name: 'HomePage' };
-	// }
+router.beforeEach((to, from) => {
+	const authStore = useAuthStore();
+	if (!authStore.isLoggedIn && to.meta.requiresAuth) {
+		return { name: 'LoginPage' };
+	} else if (authStore.isLoggedIn && to.meta.hideForAuth) {
+		return { name: 'HomePage' };
+	}
 });
 
 export default router;

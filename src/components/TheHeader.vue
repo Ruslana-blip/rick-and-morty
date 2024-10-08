@@ -3,7 +3,8 @@
 		<button
 			type="button"
 			class="header__burger"
-			@click="isNavOpen = !isNavOpen"
+			@click="$emit('on-toggle')"
+			v-if="isLoggedIn"
 		>
 			<MenuIcon />
 		</button>
@@ -24,60 +25,45 @@
 		</h2>
 		<div
 			class="header__no-user"
-			v-if="!isLoginIn"
+			v-if="!isLoggedIn"
+			@click="logOut"
 		>
-			<RouterLink
-				class="header__user__link"
-				:to="{ name: 'LoginPage' }"
-			>
-				<Login />
-			</RouterLink>
+			<Login />
 		</div>
 		<div
 			class="header__user"
 			v-else
-		></div>
+		>
+			<AccountBox />
+		</div>
 	</header>
 </template>
 
 <script>
 import MenuIcon from 'vue-material-design-icons/Menu.vue';
 import Login from 'vue-material-design-icons/Login.vue';
+import AccountBox from 'vue-material-design-icons/AccountBox.vue';
+import { useAuthStore } from '@/store/authStore';
+import { mapActions, mapState } from 'pinia';
 
 export default {
 	name: 'TheHeader',
 	components: {
 		MenuIcon,
-		Login
+		Login,
+		AccountBox
 	},
 	data() {
 		return {
-			isLoginIn: false,
 			title: ' The Rick and Morty API'
 		};
 	},
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true
-		}
-	},
-	emits: ['update:modelValue'],
+	emits: ['on-toggle'],
 	computed: {
-		isNavOpen: {
-			get() {
-				return this.modelValue;
-			},
-			set(value) {
-				this.$emit('update:modelValue', value);
-			}
-		}
+		...mapState(useAuthStore, ['isLoggedIn'])
 	},
 	methods: {
-		showMenu(isLoginIn) {
-			if (!isLoginIn) {
-			}
-		}
+		...mapActions(useAuthStore, ['logOut'])
 	}
 };
 </script>
@@ -125,6 +111,9 @@ export default {
 		height: 36px;
 		border-radius: 50%;
 		background-color: $light-grey;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 }
 </style>

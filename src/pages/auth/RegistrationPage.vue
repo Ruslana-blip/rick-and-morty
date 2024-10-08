@@ -153,20 +153,21 @@
 		<div class="form__actions">
 			<div class="form__link">Have account?</div>
 
-			<RouterLink :to="{ name: 'LoginPage' }">
-				<button
-					type="submit"
-					class="form__button"
-				>
-					Submit
-				</button>
-			</RouterLink>
+			<button
+				type="submit"
+				class="form__button"
+			>
+				Submit
+			</button>
 		</div>
 	</Form>
 </template>
 
 <script>
 import { Form, Field, ErrorMessage } from 'vee-validate';
+
+import { useAuthStore } from '@/store/authStore';
+import { mapActions } from 'pinia';
 export default {
 	name: 'RegistrationPage',
 
@@ -182,6 +183,7 @@ export default {
 		};
 	},
 	methods: {
+		...mapActions(useAuthStore, ['register']),
 		validateName(name) {
 			if (!name) return 'This field is required.';
 			const validRegexName = /^[A-Za-zА-Яа-яЁёІіЇїЄє' -]{2,}$/;
@@ -193,9 +195,9 @@ export default {
 		validatePhone(number) {
 			if (!number) return 'This field is required.';
 
-			const validPhoneRegex = /^\d{13}$/;
+			const validPhoneRegex = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/;
 			if (!validPhoneRegex.test(number)) {
-				return 'Phone number must start with +380 followed by 9 digits.';
+				return 'Phone number must be 13 digits.';
 			}
 
 			return true;

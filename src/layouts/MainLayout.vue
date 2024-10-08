@@ -1,8 +1,11 @@
 <template>
 	<div class="page">
-		<TheHavigation :is-open="isNavOpen" />
+		<TheHavigation
+			:is-open="isNavOpen"
+			v-if="isLoggedIn"
+		/>
 		<div class="page__content">
-			<TheHeader v-model="isNavOpen" />
+			<TheHeader @on-toggle="isNavOpen = !isNavOpen" />
 			<main class="page__main">
 				<RouterView />
 			</main>
@@ -14,6 +17,8 @@
 import TheHavigation from '@/components/TheHavigation.vue';
 import TheHeader from '@/components/TheHeader.vue';
 
+import { useAuthStore } from '@/store/authStore';
+import { mapState } from 'pinia';
 export default {
 	name: 'MainLayout',
 	components: {
@@ -24,6 +29,9 @@ export default {
 		return {
 			isNavOpen: false
 		};
+	},
+	computed: {
+		...mapState(useAuthStore, ['isLoggedIn'])
 	}
 };
 </script>
